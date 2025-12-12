@@ -1,7 +1,13 @@
-﻿using System.Windows;
-using BluetoothControlPanel.UI.ViewModels;
-using BluetoothControlPanel.UI.Views;
+﻿using System.Reflection;
+using System.Windows;
+
 using Microsoft.Extensions.DependencyInjection;
+
+using BluetoothControlPanel.Core.Bluetooth;
+using BluetoothControlPanel.UI.Services.Configuration;
+using BluetoothControlPanel.UI.Services.DependencyInjection;
+using BluetoothControlPanel.UI.Services.Theme;
+using BluetoothControlPanel.UI.Views;
 
 namespace BluetoothControlPanel.UI;
 
@@ -9,26 +15,33 @@ public partial class App : Application
 {
     private ServiceProvider? _serviceProvider;
 
-    private static void ConfigureServices(IServiceCollection services)
-    {
-        services.AddSingleton<MainWindow>();
-        services.AddSingleton<MainViewModel>();
-    }
-
-    private void OnStartup(object sender, StartupEventArgs e)
+    protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
 
+        ThemeService.Initialize(this);
+
         var services = new ServiceCollection();
-        ConfigureServices(services);
+        services.AddAttributedServices(Assembly.GetExecutingAssembly());
+
         _serviceProvider = services.BuildServiceProvider();
 
-        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-        mainWindow.Show();
+        var configService = _serviceProvider.GetRequiredService<IAppConfigService>();
+        await configService.LoadAsync();
+
+        await Scanner.InitAsync();
+
+        var window = _serviceProvider.GetRequiredService<MainWindow>();
+        window.Show();
     }
 
-    private void OnExit(object sender, ExitEventArgs e)
+    protected override void OnExit(ExitEventArgs e)
     {
+        if (Scanner.IsInitialized)
+        {
+            Scanner.Dispose();
+        }
+
         _serviceProvider?.Dispose();
         base.OnExit(e);
     }
