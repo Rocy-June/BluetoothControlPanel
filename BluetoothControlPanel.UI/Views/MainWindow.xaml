@@ -5,29 +5,109 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:BluetoothControlPanel.UI.ViewModels"
-    xmlns:local="clr-namespace:BluetoothControlPanel.UI.Views"
+    xmlns:ctrl="clr-namespace:BluetoothControlPanel.UI.Controls"
+    xmlns:bt="clr-namespace:BluetoothControlPanel.Core.Bluetooth;assembly=BluetoothControlPanel.Core"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance vm:MainViewModel, IsDesignTimeCreatable=True}"
     Height="600" Width="380"
     WindowStyle="None"
     AllowsTransparency="True"
     Background="Transparent"
-    ShowInTaskbar="False"
+    ShowInTaskbar="True"
     Topmost="True"
     WindowStartupLocation="Manual"
     Loaded="OnLoaded">
 
     <Window.Resources>
-        
-        
-        
+
+        <DataTemplate DataType="{x:Type bt:DeviceInfo}">
+            <ctrl:DeviceItem Device="{Binding}" />
+        </DataTemplate>
+
+        <Style x:Key="DeivceListTitle" TargetType="TextBlock" BasedOn="{StaticResource TextBase}">
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="FontSize" Value="12pt" />
+        </Style>
+
     </Window.Resources>
 
     <Border x:Name="Root" Style="{StaticResource WindowBorder}">
         <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-            <TextBlock Text="123" />
+            <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center" Margin="8">
+                <Button Content="Refresh" Command="{Binding RefreshStatusCommand}" Padding="12,6" />
+                <Button Content="Debug" 
+                        Command="{Binding OpenDebugWindowCommand}" 
+                        Padding="12,6" 
+                        Margin="10,0,0,0" />
+                <TextBlock Text="{Binding StatusMessage}"
+                           Margin="8,0,0,0"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
 
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+            <TextBlock 
+                        Style="{StaticResource DeivceListTitle}"
+                        Text="Your devices"
+                        Grid.Row="0"/>
+
+                    <ItemsControl 
+                        ItemsSource="{Binding PairedDevices}"
+                        Grid.Row="1">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ctrl:DeviceItem 
+                                    Device="{Binding}"      
+                                    DisconnectText="Paired" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                    </ItemsControl>
+
+                    <TextBlock 
+                        Style="{StaticResource DeivceListTitle}"
+                        Text="New devices"
+                        Grid.Row="2"/>
+
+                    <ItemsControl 
+                        ItemsSource="{Binding AvailableDevices}"
+                        Grid.Row="3">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ctrl:DeviceItem 
+                                    Device="{Binding}"
+                                    DisconnectText=""
+                                    ConnectText="" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                    </ItemsControl>
+                </Grid>
+            </ScrollViewer>
         </Grid>
     </Border>
 </Window>

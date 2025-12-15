@@ -1,0 +1,218 @@
+﻿<Button x:Class="BluetoothControlPanel.UI.Controls.DeviceItem"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:BluetoothControlPanel.UI.Controls"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Focusable="True"
+        IsTabStop="True"
+        Padding="0"
+        OverridesDefaultStyle="True"
+        Background="Transparent"
+        BorderThickness="0"
+        VerticalContentAlignment="Stretch"
+        HorizontalContentAlignment="Stretch"
+        d:DesignWidth="600" d:DesignHeight="120">
+
+    <Button.Template>
+        <ControlTemplate TargetType="{x:Type Button}">
+            <ContentPresenter />
+        </ControlTemplate>
+    </Button.Template>
+
+    <Button.Resources>
+
+        <Style x:Key="DeviceBorder" TargetType="Border">
+            <Setter Property="Height" Value="60" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource BackgroundHoverBrush}" />
+                </Trigger>
+                <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=local:DeviceItem}}" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource BackgroundActiveBrush}" />
+                    <Setter Property="Height" Value="120" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="LineBorder" TargetType="Border">
+            <Setter Property="Padding" Value="10" />
+        </Style>
+
+        <Style x:Key="DetailLineBorder" TargetType="Border" BasedOn="{StaticResource LineBorder}">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=local:DeviceItem}}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="LineGrid" TargetType="Grid">
+            <Setter Property="Height" Value="40" />
+        </Style>
+
+        <Style x:Key="DeviceIconGrid" TargetType="Grid">
+            <Setter Property="Width" Value="32" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Margin" Value="0,0,10,0" />
+            <Setter Property="Background" Value="{DynamicResource TextBaseBrush}" />
+        </Style>
+
+        <Style x:Key="DeviceName" TargetType="TextBlock" BasedOn="{StaticResource TextBase}">
+            <Setter Property="FontSize" Value="10pt" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="ConnectState" TargetType="TextBlock" BasedOn="{StaticResource TextBase}">
+            <Setter Property="FontSize" Value="12pt" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSubBrush}" />
+
+        </Style>
+
+        <Style x:Key="BatteryIconGrid" TargetType="Grid">
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Background" Value="{DynamicResource TextBaseBrush}" />
+        </Style>
+
+        <Style x:Key="BatteryPersent" TargetType="TextBlock" BasedOn="{StaticResource TextBase}">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="DeviceDetail" TargetType="TextBlock" BasedOn="{StaticResource TextBase}">
+            <Setter Property="Foreground" Value="{DynamicResource TextSubBrush}" />
+        </Style>
+
+    </Button.Resources>
+
+    <Border Style="{StaticResource DeviceBorder}">
+        <StackPanel>
+
+            <Border Style="{StaticResource LineBorder}">
+                <Grid Style="{StaticResource LineGrid}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid 
+                        Style="{StaticResource DeviceIconGrid}"
+                        Grid.Column="0"></Grid>
+
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock 
+                            Style="{StaticResource DeviceName}"
+                            Grid.Row="0"
+                            Grid.Column="0">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource EmptyRollbackConverter}">
+                                    <Binding Path="Device.Name" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                    <Binding Source="Unknown Device" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+
+                        <TextBlock
+                            Style="{StaticResource ConnectState}"
+                            Grid.Row="1"
+                            Grid.Column="0">
+
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource ConnectionStateToTextConverter}">
+                                    <Binding Path="Device.ConnectionState" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                    <Binding Path="DisconnectText" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                    <Binding Path="ConnectText" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                            
+                        </TextBlock>
+                    </Grid>
+
+                    <Grid Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid 
+                            Style="{StaticResource BatteryIconGrid}"
+                            Grid.Row="0"
+                            Grid.Column="2"></Grid>
+
+                        <TextBlock
+                            Style="{StaticResource BatteryPersent}"
+                            Text="100%"
+                            Grid.Row="1"
+                            Grid.Column="2"/>
+                    </Grid>
+
+                </Grid>
+            </Border>
+
+            <Border x:Name="DetailsBorder" Style="{StaticResource DetailLineBorder}">
+                <Grid Style="{StaticResource LineGrid}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel 
+                        Orientation="Vertical" 
+                        Grid.Column="0">
+                        
+                        <TextBlock Style="{StaticResource DeviceDetail}" Text="{Binding Device.LastSeen, RelativeSource={RelativeSource AncestorType=local:DeviceItem}, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}"  />
+                        <TextBlock Style="{StaticResource DeviceDetail}">
+                            <Run Text="{Binding Device.Address, RelativeSource={RelativeSource AncestorType=local:DeviceItem}, Mode=OneWay}" />
+                            <Run Text=" | " />
+                            <Run>
+                                <Run.Text>
+                                    <MultiBinding Converter="{StaticResource FormattedStringConverter}">
+                                        <Binding Path="Device.Rssi" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                        <Binding Path="." Source="" />
+                                        <Binding Path="." Source="{}{0} dBm" />
+                                        <Binding Path="." Source="---" />
+                                    </MultiBinding>
+                                </Run.Text>
+                            </Run>
+                        </TextBlock>
+                        
+                    </StackPanel>
+
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Grid.Column="1">
+                        
+                        <Button Content="Connect"/>
+                        <Button Content="Delete"/>
+                        
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+        </StackPanel>
+    </Border>
+
+</Button>

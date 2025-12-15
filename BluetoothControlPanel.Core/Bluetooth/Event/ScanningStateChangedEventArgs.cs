@@ -4,16 +4,10 @@ using System.Text;
 
 namespace BluetoothControlPanel.Core.Bluetooth.Event;
 
-public sealed class ScanningStateChangedEventArgs : EventArgs
+public sealed class ScanningStateChangedEventArgs(bool isScanning, string? reason = null)
+    : EventArgs
 {
-    public ScanningStateChangedEventArgs(bool isScanning, string? reason = null)
-    {
-        IsScanning = isScanning;
-        Reason = reason;
-    }
+    public bool IsScanning { get; } = isScanning;
 
-    public bool IsScanning { get; }
-
-    public string? Reason { get; }
+    public string? Reason { get; } = reason;
 }
-

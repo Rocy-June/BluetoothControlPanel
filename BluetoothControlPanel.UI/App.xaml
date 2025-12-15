@@ -1,17 +1,22 @@
 ﻿<Application x:Class="BluetoothControlPanel.UI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:BluetoothControlPanel.UI">
+             xmlns:local="clr-namespace:BluetoothControlPanel.UI"
+             xmlns:conv="clr-namespace:BluetoothControlPanel.UI.Converters">
     
     <Application.Resources>
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                
-                <ResourceDictionary Source="Styles/BaseStyle.xaml"/>
+
+                <ResourceDictionary Source="Styles/StyleBase.xaml"/>
+
+                <ResourceDictionary Source="Styles/WindowsMode/Light.xaml"/>
                 <ResourceDictionary Source="Styles/WindowsMode/DisableMainTheme/Light.xaml"/>
                 <ResourceDictionary Source="Styles/ThemeMode/Light.xaml"/>
-                
+
+                <ResourceDictionary Source="Converters/Converters.xaml"/>
+
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 

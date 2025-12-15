@@ -10,16 +10,24 @@
         Width="800"
         MinHeight="400"
         MinWidth="600"
+        Background="{DynamicResource BackgroundBrush}"
         d:DataContext="{d:DesignInstance vm:DebugViewModel, IsDesignTimeCreatable=False}">
-    
+
+    <Window.Resources>
+
+        <Style TargetType="TextBlock" BasedOn="{StaticResource TextBase}">
+            <Setter Property="Foreground" Value="#000" />
+        </Style>
+        
+    </Window.Resources>
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,2">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,2">
             <Button Content="Refresh status"
                     Command="{Binding RefreshStatusCommand}"
                     Padding="12,6" />
@@ -29,8 +37,8 @@
                        Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
         </StackPanel>
 
-        <GroupBox Grid.Row="2" Header="Activity">
-            <ListBox ItemsSource="{Binding LogEntries}" />
+        <GroupBox Grid.Row="1" Header="Activity">
+            <ListBox ItemsSource="{Binding LogEntries}" Background="{DynamicResource BackgroundBrush}" />
         </GroupBox>
     </Grid>
     

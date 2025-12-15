@@ -7,6 +7,7 @@ using BluetoothControlPanel.Core.Bluetooth;
 using BluetoothControlPanel.UI.Services.Configuration;
 using BluetoothControlPanel.UI.Services.DependencyInjection;
 using BluetoothControlPanel.UI.Services.Theme;
+using BluetoothControlPanel.UI.Services.Taskbar;
 using BluetoothControlPanel.UI.Views;
 
 namespace BluetoothControlPanel.UI;
@@ -14,6 +15,7 @@ namespace BluetoothControlPanel.UI;
 public partial class App : Application
 {
     private ServiceProvider? _serviceProvider;
+    private TrayIconService? _trayIconService;
 
     protected override async void OnStartup(StartupEventArgs e)
     {
@@ -29,7 +31,10 @@ public partial class App : Application
         var configService = _serviceProvider.GetRequiredService<IAppConfigService>();
         await configService.LoadAsync();
 
-        await Scanner.InitAsync();
+        await Driver.InitAsync();
+        await Driver.LoadPairedDevicesAsync();
+
+        _trayIconService = _serviceProvider.GetRequiredService<TrayIconService>();
 
         var window = _serviceProvider.GetRequiredService<MainWindow>();
         window.Show();
@@ -37,9 +42,12 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
-        if (Scanner.IsInitialized)
+        _trayIconService?.Dispose();
+        _trayIconService = null;
+
+        if (Driver.IsInitialized)
         {
-            Scanner.Dispose();
+            Driver.Dispose();
         }
 
         _serviceProvider?.Dispose();

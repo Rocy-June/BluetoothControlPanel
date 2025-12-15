@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using BluetoothControlPanel.Core.Bluetooth;
 using BluetoothControlPanel.Core.Bluetooth.Event;
 using BluetoothControlPanel.UI.Services.Configuration;
@@ -18,51 +19,50 @@ public partial class DebugViewModel : ViewModelBase
 {
     private readonly IAppConfigService _configService;
 
+    public ObservableCollection<SystemColorSwatch> SystemColorSwatches { get; } = new();
+    public ObservableCollection<DeviceInfo> Devices { get; } = new();
+
     public DebugViewModel(IAppConfigService configService)
     {
         _configService = configService;
 
-        Scanner.DeviceDiscovered += OnDeviceDiscovered;
-        Scanner.ScanningStateChanged += OnScanningStateChanged;
+        Driver.ScanningStateChanged += OnScanningStateChanged;
+        Driver.DevicesChanged += OnDevicesChanged;
 
         AddLog($"Config loaded from {_configService.ConfigPath}");
+        LoadSystemColors();
+        SyncFromDriver();
     }
 
     [ObservableProperty]
     private string statusMessage = "Ready";
 
-    [ObservableProperty]
-    private ObservableCollection<DeviceInfo> devices = [];
-
-    private readonly HashSet<string> _seenAddresses = new(StringComparer.OrdinalIgnoreCase);
-
     [RelayCommand]
     private async Task RefreshStatusAsync()
     {
         StatusMessage = "Scanning...";
-        _seenAddresses.Clear();
-        Devices.Clear();
+        Driver.ClearDiscoveryLists();
         AddLog($"Scan started.");
 
         try
         {
-            if (!Scanner.IsSupported)
+            if (!Driver.IsSupported)
             {
                 StatusMessage = "Bluetooth not supported";
-                AddLog(Scanner.LastError ?? "Bluetooth not supported.");
+                AddLog(Driver.LastError ?? "Bluetooth not supported.");
                 return;
             }
 
-            if (!Scanner.IsEnabled)
+            if (!Driver.IsEnabled)
             {
                 StatusMessage = "Bluetooth is off";
-                AddLog(Scanner.LastError ?? "Please turn on Bluetooth.");
+                AddLog(Driver.LastError ?? "Please turn on Bluetooth.");
                 return;
             }
 
-            Scanner.Start();
+            Driver.StartScan();
             await Task.Delay(TimeSpan.FromSeconds(10));
-            Scanner.Stop();
+            Driver.StopScan();
 
             StatusMessage = $"Found {Devices.Count} device(s)";
             AddLog($"Scan completed.");
@@ -74,24 +74,24 @@ public partial class DebugViewModel : ViewModelBase
         }
     }
 
-    private void OnDeviceDiscovered(object? sender, DeviceInfo info)
+    private void OnDevicesChanged(object? sender, EventArgs e)
     {
-        void AddDevice()
-        {
-            if (_seenAddresses.Add(info.Address))
-            {
-                Devices.Add(info);
-                AddLog($"Device: {info.Name ?? "<unknown>"} ({info.Address}) RSSI {info.Rssi}");
-            }
-        }
-
         if (Application.Current?.Dispatcher?.CheckAccess() == true)
         {
-            AddDevice();
+            SyncFromDriver();
         }
         else
         {
-            Application.Current?.Dispatcher?.Invoke(AddDevice);
+            Application.Current?.Dispatcher?.Invoke(SyncFromDriver);
+        }
+    }
+
+    private void SyncFromDriver()
+    {
+        Devices.Clear();
+        foreach (var item in Driver.GetAvailableDevicesSnapshot())
+        {
+            Devices.Add(item);
         }
     }
 
@@ -114,4 +114,37 @@ public partial class DebugViewModel : ViewModelBase
             });
         }
     }
+
+    private void LoadSystemColors()
+    {
+        SystemColorSwatches.Clear();
+
+        var type = typeof(SystemColors);
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var prop in type.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static))
+        {
+            try
+            {
+                var name = prop.Name;
+                if (!seen.Add(name))
+                {
+                    continue;
+                }
+
+                if (prop.PropertyType == typeof(Color))
+                {
+                    var color = (Color)prop.GetValue(null)!;
+                    var brush = new SolidColorBrush(color);
+                    brush.Freeze();
+                    SystemColorSwatches.Add(new SystemColorSwatch(name, brush));
+                }
+            }
+            catch
+            {
+                // Ignore problematic properties.
+            }
+        }
+    }
 }
+
+public sealed record SystemColorSwatch(string Name, Brush Brush);

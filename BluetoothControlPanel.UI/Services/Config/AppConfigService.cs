@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -9,11 +9,8 @@ namespace BluetoothControlPanel.UI.Services.Configuration;
 [SingletonService(ServiceType = typeof(IAppConfigService))]
 public class AppConfigService : IAppConfigService
 {
-    private readonly JsonSerializerOptions _jsonOptions = new()
-    {
-        WriteIndented = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
+    private readonly JsonSerializerOptions _jsonOptions =
+        new() { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     public AppConfigService()
     {

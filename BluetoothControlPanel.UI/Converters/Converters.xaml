@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:BluetoothControlPanel.UI.Converters">
+
+    <local:EmptyRollbackConverter x:Key="EmptyRollbackConverter" />
+    <local:ConnectionStateToTextConverter x:Key="ConnectionStateToTextConverter" />
+    <local:FormattedStringConverter x:Key="FormattedStringConverter" />
+    
+</ResourceDictionary>

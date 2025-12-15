@@ -11,11 +11,12 @@ public partial class MainWindow : Window
 {
     private readonly IMonitorService _monitorService;
 
-    public MainWindow(IMonitorService monitorService)
+    public MainWindow(IMonitorService monitorService, BluetoothControlPanel.UI.ViewModels.MainViewModel viewModel)
     {
         _monitorService = monitorService;
 
         InitializeComponent();
+        DataContext = viewModel;
 
         Loaded += OnLoaded;
     }
