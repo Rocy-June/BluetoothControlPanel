@@ -1,8 +1,11 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:syswin="clr-namespace:System.Windows;assembly=PresentationFramework">
 
-    <SolidColorBrush x:Key="BackgroundBrush" Color="#E4E4E4" />
-    <SolidColorBrush x:Key="BackgroundHoverBrush" Color="#A0A0A0" />
-    <SolidColorBrush x:Key="BackgroundActiveBrush" Color="#C2C2C2" />
+    <SolidColorBrush x:Key="AccentDark1Brush" Color="#E4E4E4" />
+    <SolidColorBrush x:Key="AccentLight1Brush" Color="#A0A0A0" />
+    <SolidColorBrush x:Key="AccentBrush" Color="#C2C2C2" />
+
+    <SolidColorBrush x:Key="AccentLight2Brush" Color="#222222" />
 
 </ResourceDictionary>

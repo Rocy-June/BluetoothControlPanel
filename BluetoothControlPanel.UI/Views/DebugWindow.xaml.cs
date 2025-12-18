@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 
-using BluetoothControlPanel.UI.Services.DependencyInjection;
-using BluetoothControlPanel.UI.ViewModels;
+using BluetoothControlPanel.Application.DependencyInjection;
+using BluetoothControlPanel.Application.ViewModels;
 
 namespace BluetoothControlPanel.UI.Views;
 

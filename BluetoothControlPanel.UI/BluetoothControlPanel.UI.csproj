@@ -9,21 +9,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\Images\ApplicationIcon.ico" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
+    <ProjectReference Include="..\BluetoothControlPanel.Application\BluetoothControlPanel.Application.csproj" />
+    <ProjectReference Include="..\BluetoothControlPanel.Domain\BluetoothControlPanel.Domain.csproj" />
+    <ProjectReference Include="..\BluetoothControlPanel.Infrastructure\BluetoothControlPanel.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BluetoothControlPanel.Core\BluetoothControlPanel.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Assets\Images\ApplicationIcon.ico" />
+    <Folder Include="Assets\Images\" />
   </ItemGroup>
 
 </Project>

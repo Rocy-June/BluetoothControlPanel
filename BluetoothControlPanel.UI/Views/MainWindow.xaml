@@ -2,54 +2,74 @@
     x:Class="BluetoothControlPanel.UI.Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:BluetoothControlPanel.UI.ViewModels"
+    xmlns:vm="clr-namespace:BluetoothControlPanel.Application.ViewModels;assembly=BluetoothControlPanel.Application"
     xmlns:ctrl="clr-namespace:BluetoothControlPanel.UI.Controls"
-    xmlns:bt="clr-namespace:BluetoothControlPanel.Core.Bluetooth;assembly=BluetoothControlPanel.Core"
+    xmlns:bt="clr-namespace:BluetoothControlPanel.Domain.Bluetooth;assembly=BluetoothControlPanel.Domain"
     mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance vm:MainViewModel, IsDesignTimeCreatable=True}"
-    Height="600" Width="380"
+    d:DataContext="{d:DesignInstance vm:MainViewModel,IsDesignTimeCreatable=False}"
+    Focusable="True"
+    Height="600" Width="420"
     WindowStyle="None"
     AllowsTransparency="True"
     Background="Transparent"
     ShowInTaskbar="True"
     Topmost="True"
     WindowStartupLocation="Manual"
-    Loaded="OnLoaded">
+    Visibility="Hidden"
+    x:Name="MainWindowRoot">
+
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Activated">
+            <b:InvokeCommandAction Command="{Binding ShownCommand}" />
+        </b:EventTrigger>
+        <b:EventTrigger EventName="Deactivated">
+            <b:InvokeCommandAction Command="{Binding HideCommand}" />
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
 
     <Window.Resources>
+
+        <Storyboard x:Key="ShowWindowStoryboard">
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.18" />
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="RenderTransform.ScaleX" From="0.95" To="1" Duration="0:0:0.18" />
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="RenderTransform.ScaleY" From="0.95" To="1" Duration="0:0:0.18" />
+        </Storyboard>
+
+        <Storyboard x:Key="HideWindowStoryboard">
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.14" />
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="RenderTransform.ScaleX" From="1" To="0.95" Duration="0:0:0.14" />
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="RenderTransform.ScaleY" From="1" To="0.95" Duration="0:0:0.14" />
+        </Storyboard>
 
         <DataTemplate DataType="{x:Type bt:DeviceInfo}">
             <ctrl:DeviceItem Device="{Binding}" />
         </DataTemplate>
 
+        <Style x:Key="MainWindowBorder" TargetType="Border" BasedOn="{StaticResource WindowBorder}">
+            <Setter Property="Padding" Value="0,15,0,0" />
+        </Style>
+
         <Style x:Key="DeivceListTitle" TargetType="TextBlock" BasedOn="{StaticResource TextBase}">
-            <Setter Property="Padding" Value="10" />
+            <Setter Property="Padding" Value="10,5,10,10" />
             <Setter Property="FontSize" Value="12pt" />
         </Style>
 
     </Window.Resources>
 
-    <Border x:Name="Root" Style="{StaticResource WindowBorder}">
+    <Border x:Name="Root" Style="{StaticResource MainWindowBorder}">
+        <Border.RenderTransform>
+            <ScaleTransform ScaleX="1" ScaleY="1" />
+        </Border.RenderTransform>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center" Margin="8">
-                <Button Content="Refresh" Command="{Binding RefreshStatusCommand}" Padding="12,6" />
-                <Button Content="Debug" 
-                        Command="{Binding OpenDebugWindowCommand}" 
-                        Padding="12,6" 
-                        Margin="10,0,0,0" />
-                <TextBlock Text="{Binding StatusMessage}"
-                           Margin="8,0,0,0"
-                           VerticalAlignment="Center"/>
-            </StackPanel>
-
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -58,7 +78,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-            <TextBlock 
+                    <TextBlock 
                         Style="{StaticResource DeivceListTitle}"
                         Text="Your devices"
                         Grid.Row="0"/>
@@ -69,8 +89,8 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <ctrl:DeviceItem 
-                                    Device="{Binding}"      
-                                    DisconnectText="Paired" />
+                                    Device="{Binding}"
+                                    IsPaired="True" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
 
@@ -94,8 +114,7 @@
                             <DataTemplate>
                                 <ctrl:DeviceItem 
                                     Device="{Binding}"
-                                    DisconnectText=""
-                                    ConnectText="" />
+                                    IsPaired="False" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
 
@@ -108,6 +127,17 @@
                     </ItemsControl>
                 </Grid>
             </ScrollViewer>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Center" Margin="8">
+
+                <Button 
+                    Content="Debug" 
+                    Command="{Binding OpenDebugWindowCommand}" 
+                    Padding="12,6" 
+                    Margin="10,0,0,0" />
+
+            </StackPanel>
+            
         </Grid>
     </Border>
 </Window>

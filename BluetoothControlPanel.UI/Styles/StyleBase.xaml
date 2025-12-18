@@ -22,7 +22,7 @@
     <Style x:Key="WindowBorder" TargetType="Border">
         <Setter Property="BorderBrush" Value="#4888" />
         <Setter Property="BorderThickness" Value="{StaticResource WindowBorderThickness}" />
-        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
+        <Setter Property="Background" Value="{DynamicResource AccentDark1Brush}" />
         <Setter Property="Margin" Value="{StaticResource WindowBorderMargin}" />
         <Setter Property="Effect">
             <Setter.Value>

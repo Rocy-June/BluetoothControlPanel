@@ -1,29 +1,56 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Media;
-using BluetoothControlPanel.UI.Services.DependencyInjection;
-using BluetoothControlPanel.UI.Services.Monitors;
+using System.Windows.Media.Animation;
+
+using BluetoothControlPanel.Application.DependencyInjection;
+using BluetoothControlPanel.Application.Services.Monitors;
+using BluetoothControlPanel.Application.ViewModels;
+using BluetoothControlPanel.Domain.Model;
 
 namespace BluetoothControlPanel.UI.Views;
 
 [SingletonService]
 public partial class MainWindow : Window
 {
-    private readonly IMonitorService _monitorService;
+    private const int GWL_EXSTYLE = -20;
+    private const int WS_EX_TOOLWINDOW = 0x00000080;
 
-    public MainWindow(IMonitorService monitorService, BluetoothControlPanel.UI.ViewModels.MainViewModel viewModel)
+    [DllImport("user32.dll")]
+    private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+    [DllImport("user32.dll")]
+    private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+    private readonly IMonitorService _monitorService;
+    private readonly MainViewModel _viewModel;
+
+    public MainWindow(IMonitorService monitorService, MainViewModel viewModel)
     {
         _monitorService = monitorService;
+        _viewModel = viewModel;
 
         InitializeComponent();
         DataContext = viewModel;
 
         Loaded += OnLoaded;
+        _viewModel.PropertyChanged += OnViewModelPropertyChanged;
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        SetNotShowInTaskList();
         ResetPosition();
+        ApplyWindowOpenState(_viewModel.IsWindowOpen);
+    }
+
+    private void SetNotShowInTaskList()
+    {
+        var hwnd = new WindowInteropHelper(this).Handle;
+        int exStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
+        _ = SetWindowLong(hwnd, GWL_EXSTYLE, exStyle | WS_EX_TOOLWINDOW);
     }
 
     private void ResetPosition()
@@ -110,5 +137,33 @@ public partial class MainWindow : Window
         }
 
         return TaskBarPosition.Left;
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(MainViewModel.IsWindowOpen))
+        {
+            ApplyWindowOpenState(_viewModel.IsWindowOpen);
+        }
+    }
+
+    private void ApplyWindowOpenState(bool isOpen)
+    {
+        if (isOpen)
+        {
+            if (FindResource("ShowWindowStoryboard") is Storyboard storyboard)
+            {
+                Show();
+                storyboard.Begin(this, true);
+            }
+        }
+        else 
+        {
+            if (FindResource("HideWindowStoryboard") is Storyboard storyboard)
+            {
+                storyboard.Completed += (s, e) => { Hide(); };
+                storyboard.Begin(this, true);
+            }
+        }
     }
 }

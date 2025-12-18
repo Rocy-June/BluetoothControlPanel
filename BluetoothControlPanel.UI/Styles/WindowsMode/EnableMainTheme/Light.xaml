@@ -3,8 +3,10 @@
 
     <!-- This mode is actually not available. -->
 
-    <SolidColorBrush x:Key="BackgroundBrush" Color="#1E1E1E" />
-    <SolidColorBrush x:Key="BackgroundHoverBrush" Color="#555" />
-    <SolidColorBrush x:Key="BackgroundActiveBrush" Color="#333" />
+    <SolidColorBrush x:Key="AccentDark1Brush" Color="#1E1E1E" />
+    <SolidColorBrush x:Key="AccentLight1Brush" Color="#555" />
+    <SolidColorBrush x:Key="AccentBrush" Color="#333" />
+
+    <SolidColorBrush x:Key="AccentLight2Brush" Color="#222" />
 
 </ResourceDictionary>

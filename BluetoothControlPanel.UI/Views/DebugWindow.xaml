@@ -3,14 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:BluetoothControlPanel.UI.ViewModels"
+        xmlns:vm="clr-namespace:BluetoothControlPanel.Application.ViewModels;assembly=BluetoothControlPanel.Application"
         mc:Ignorable="d"
         Title="Debug Window"
         Height="450"
         Width="800"
         MinHeight="400"
         MinWidth="600"
-        Background="{DynamicResource BackgroundBrush}"
+        Background="{DynamicResource AccentDark1Brush}"
         d:DataContext="{d:DesignInstance vm:DebugViewModel, IsDesignTimeCreatable=False}">
 
     <Window.Resources>
@@ -38,7 +38,7 @@
         </StackPanel>
 
         <GroupBox Grid.Row="1" Header="Activity">
-            <ListBox ItemsSource="{Binding LogEntries}" Background="{DynamicResource BackgroundBrush}" />
+            <ListBox ItemsSource="{Binding LogEntries}" Background="{DynamicResource AccentDark1Brush}" />
         </GroupBox>
     </Grid>
     

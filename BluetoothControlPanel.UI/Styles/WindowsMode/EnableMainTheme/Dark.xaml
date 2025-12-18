@@ -6,8 +6,12 @@
         x:Key="BackgroundColor"
         A="{x:Static syswin:SystemColors.AccentColorDark1}"/>-->
 
-    <SolidColorBrush x:Key="BackgroundBrush" Color="{x:Static syswin:SystemColors.AccentColorDark1}" />
-    <SolidColorBrush x:Key="BackgroundHoverBrush" Color="{x:Static syswin:SystemColors.AccentColorLight1}" />
-    <SolidColorBrush x:Key="BackgroundActiveBrush" Color="{x:Static syswin:SystemColors.AccentColor}" />
+    <SolidColorBrush x:Key="AccentBrush" Color="{x:Static syswin:SystemColors.AccentColor}" />
+    <SolidColorBrush x:Key="AccentDark1Brush" Color="{x:Static syswin:SystemColors.AccentColorDark1}" />
+    <SolidColorBrush x:Key="AccentDark2Brush" Color="{x:Static syswin:SystemColors.AccentColorDark2}" />
+    <SolidColorBrush x:Key="AccentDark3Brush" Color="{x:Static syswin:SystemColors.AccentColorDark3}" />
+    <SolidColorBrush x:Key="AccentLight1Brush" Color="{x:Static syswin:SystemColors.AccentColorLight1}" />
+    <SolidColorBrush x:Key="AccentLight2Brush" Color="{x:Static syswin:SystemColors.AccentColorLight2}" />
+    <SolidColorBrush x:Key="AccentLight3Brush" Color="{x:Static syswin:SystemColors.AccentColorLight3}" />
 
 </ResourceDictionary>

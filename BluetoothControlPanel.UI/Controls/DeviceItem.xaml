@@ -3,8 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-        xmlns:local="clr-namespace:BluetoothControlPanel.UI.Controls"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:BluetoothControlPanel.UI.Controls"
+        xmlns:proxy="clr-namespace:BluetoothControlPanel.UI.Proxy"
         mc:Ignorable="d"
         Focusable="True"
         IsTabStop="True"
@@ -14,7 +15,7 @@
         BorderThickness="0"
         VerticalContentAlignment="Stretch"
         HorizontalContentAlignment="Stretch"
-        d:DesignWidth="600" d:DesignHeight="120">
+        d:DesignWidth="600" d:DesignHeight="60">
 
     <Button.Template>
         <ControlTemplate TargetType="{x:Type Button}">
@@ -24,27 +25,47 @@
 
     <Button.Resources>
 
+        <proxy:BindingProxy x:Key="AccentDark1BrushProxy" Data="{DynamicResource AccentDark1Brush}" />
+        <proxy:BindingProxy x:Key="AccentLight1BrushProxy" Data="{DynamicResource AccentLight1Brush}" />
+
         <Style x:Key="DeviceBorder" TargetType="Border">
             <Setter Property="Height" Value="60" />
             <Setter Property="Focusable" Value="False" />
-            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
+            <Setter Property="Background" Value="{DynamicResource AccentDark1Brush}" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource BackgroundHoverBrush}" />
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <MultiBinding Converter="{StaticResource BrightnessBrushFilterConverter}">
+                                <Binding Source="{StaticResource AccentDark1BrushProxy}" Path="Data" />
+                                <Binding>
+                                    <Binding.Source>
+                                        <sys:Double>1.2</sys:Double>
+                                    </Binding.Source>
+                                </Binding>
+                            </MultiBinding>
+                        </Setter.Value>
+                    </Setter>
                 </Trigger>
-                <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=local:DeviceItem}}" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource BackgroundActiveBrush}" />
-                    <Setter Property="Height" Value="120" />
+                <DataTrigger 
+                    Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=local:DeviceItem}}" 
+                    Value="True">
+                    
+                    <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+                    <Setter Property="Height" Value="106" />
+                    
                 </DataTrigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="LineBorder" TargetType="Border">
-            <Setter Property="Padding" Value="10" />
+            <Setter Property="Padding" Value="10,0,10,10" />
         </Style>
 
-        <Style x:Key="DetailLineBorder" TargetType="Border" BasedOn="{StaticResource LineBorder}">
+        <Style x:Key="DetailLineBorder" TargetType="Border">
+            <Setter Property="Padding" Value="10" />
             <Setter Property="Visibility" Value="Collapsed" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=local:DeviceItem}}" Value="True">
                     <Setter Property="Visibility" Value="Visible" />
@@ -65,20 +86,27 @@
 
         <Style x:Key="DeviceName" TargetType="TextBlock" BasedOn="{StaticResource TextBase}">
             <Setter Property="FontSize" Value="10pt" />
-            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,5,0,0" />
         </Style>
 
         <Style x:Key="ConnectState" TargetType="TextBlock" BasedOn="{StaticResource TextBase}">
             <Setter Property="FontSize" Value="12pt" />
-            <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Foreground" Value="{DynamicResource TextSubBrush}" />
+        </Style>
 
+        <Style x:Key="BatteryGrid" TargetType="Grid">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Device.BatteryLevel, RelativeSource={RelativeSource AncestorType=local:DeviceItem}}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Hidden" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="BatteryIconGrid" TargetType="Grid">
             <Setter Property="Width" Value="16" />
             <Setter Property="Height" Value="16" />
             <Setter Property="Background" Value="{DynamicResource TextBaseBrush}" />
+            <Setter Property="Margin" Value="0,10,0,0" />
         </Style>
 
         <Style x:Key="BatteryPersent" TargetType="TextBlock" BasedOn="{StaticResource TextBase}">
@@ -87,6 +115,50 @@
 
         <Style x:Key="DeviceDetail" TargetType="TextBlock" BasedOn="{StaticResource TextBase}">
             <Setter Property="Foreground" Value="{DynamicResource TextSubBrush}" />
+        </Style>
+
+        <Style x:Key="ControlButton" TargetType="Button">
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentLight1Brush}" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="Background" Value="{DynamicResource AccentLight1Brush}" />
+            <Setter Property="Margin" Value="10,0,0,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border 
+                            Background="{TemplateBinding BorderBrush}"
+                            Padding="{TemplateBinding BorderThickness}">
+                            
+                            <Border Background="{TemplateBinding Background}">
+
+                                <ContentPresenter
+                                    HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center"/>
+
+                            </Border>
+                            
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush">
+                        <Setter.Value>
+                            <MultiBinding Converter="{StaticResource BrightnessBrushFilterConverter}">
+                                <Binding Source="{StaticResource AccentLight1BrushProxy}" Path="Data" />
+                                <Binding>
+                                    <Binding.Source>
+                                        <sys:Double>1.2</sys:Double>
+                                    </Binding.Source>
+                                </Binding>
+                            </MultiBinding>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
     </Button.Resources>
@@ -137,16 +209,18 @@
 
                             <TextBlock.Text>
                                 <MultiBinding Converter="{StaticResource ConnectionStateToTextConverter}">
-                                    <Binding Path="Device.ConnectionState" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
-                                    <Binding Path="DisconnectText" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
-                                    <Binding Path="ConnectText" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                    <Binding Path="Device" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                    <Binding Path="IsPaired" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
                                 </MultiBinding>
                             </TextBlock.Text>
                             
                         </TextBlock>
                     </Grid>
 
-                    <Grid Grid.Column="2">
+                    <Grid 
+                        Style="{StaticResource BatteryGrid}"
+                        Grid.Column="2">
+                        
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
@@ -164,7 +238,7 @@
 
                         <TextBlock
                             Style="{StaticResource BatteryPersent}"
-                            Text="100%"
+                            Text="{Binding Device.BatteryLevel, RelativeSource={RelativeSource AncestorType=local:DeviceItem}, StringFormat='{}{0:0}%'}"
                             Grid.Row="1"
                             Grid.Column="2"/>
                     </Grid>
@@ -204,10 +278,40 @@
                     <StackPanel
                         Orientation="Horizontal"
                         Grid.Column="1">
-                        
-                        <Button Content="Connect"/>
-                        <Button Content="Delete"/>
-                        
+
+                        <Button Style="{StaticResource ControlButton}" Content="Connect">
+                            <Button.Visibility>
+                                <MultiBinding Converter="{StaticResource ConnectionActionVisibilityConverter}" ConverterParameter="Connect">
+                                    <Binding Path="Device" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                    <Binding Path="IsPaired" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                </MultiBinding>
+                            </Button.Visibility>
+                        </Button>
+                        <Button Style="{StaticResource ControlButton}" Content="Disconnect">
+                            <Button.Visibility>
+                                <MultiBinding Converter="{StaticResource ConnectionActionVisibilityConverter}" ConverterParameter="Disconnect">
+                                    <Binding Path="Device" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                    <Binding Path="IsPaired" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                </MultiBinding>
+                            </Button.Visibility>
+                        </Button>
+                        <Button Style="{StaticResource ControlButton}" Content="Pair">
+                            <Button.Visibility>
+                                <MultiBinding Converter="{StaticResource ConnectionActionVisibilityConverter}" ConverterParameter="Pair">
+                                    <Binding Path="Device" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                    <Binding Path="IsPaired" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                </MultiBinding>
+                            </Button.Visibility>
+                        </Button>
+                        <Button Style="{StaticResource ControlButton}" Content="Remove">
+                            <Button.Visibility>
+                                <MultiBinding Converter="{StaticResource ConnectionActionVisibilityConverter}" ConverterParameter="Remove">
+                                    <Binding Path="Device" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                    <Binding Path="IsPaired" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                </MultiBinding>
+                            </Button.Visibility>
+                        </Button>
+
                     </StackPanel>
                 </Grid>
             </Border>

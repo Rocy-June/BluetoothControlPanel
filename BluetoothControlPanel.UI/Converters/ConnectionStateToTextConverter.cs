@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
+using BluetoothControlPanel.Domain.Bluetooth;
 using Windows.Devices.Bluetooth;
 
 namespace BluetoothControlPanel.UI.Converters;
@@ -10,18 +11,26 @@ public class ConnectionStateToTextConverter : IMultiValueConverter
 {
     public object Convert(object[] values, Type targetType, object? parameter, CultureInfo culture)
     {
-        var value = values is { Length: > 0 } ? values[0] : null;
-        var disconnectedString = values is { Length: > 1 } && values[1] is not null ? values[1] : BluetoothConnectionStatus.Disconnected.ToString();
-        var connectedString = values is { Length: > 2 } && values[2] is not null ? values[2] : BluetoothConnectionStatus.Connected.ToString();
+        var device = values.OfType<DeviceInfo>().FirstOrDefault();
+        var isPaired = values is { Length: > 1 } && values[1] is bool b && b;
 
-        return value switch
+        if (device is null) return string.Empty;
+
+        if (isPaired)
         {
-            BluetoothConnectionStatus.Disconnected => disconnectedString,
-            BluetoothConnectionStatus.Connected => connectedString,
-            _ => string.Empty,
-        };
+            return device.ConnectionState switch
+            {
+                BluetoothConnectionStatus.Disconnected => "Paired",
+                BluetoothConnectionStatus.Connected => "Connected",
+                _ => "Unknown",
+            };
+        }
+        else 
+        {
+            return string.Empty;
+        }
     }
 
-    public object[] ConvertBack(object value, Type[] targetType, object parameter, CultureInfo culture) =>
-        targetType.Select(_ => Binding.DoNothing).ToArray();
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) =>
+        targetTypes.Select(_ => Binding.DoNothing).ToArray();
 }

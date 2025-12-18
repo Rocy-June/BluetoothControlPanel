@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using BluetoothControlPanel.Core.Bluetooth;
+using BluetoothControlPanel.Domain.Bluetooth;
 
 namespace BluetoothControlPanel.UI.Controls;
 
@@ -13,18 +13,11 @@ public partial class DeviceItem : Button
         new PropertyMetadata(null)
     );
 
-    public static readonly DependencyProperty ConnectTextProperty = DependencyProperty.Register(
-        nameof(ConnectText),
-        typeof(string),
+    public static readonly DependencyProperty IsPairedProperty = DependencyProperty.Register(
+        nameof(IsPaired),
+        typeof(bool),
         typeof(DeviceItem),
-        new PropertyMetadata("Connected")
-    );
-
-    public static readonly DependencyProperty DisconnectTextProperty = DependencyProperty.Register(
-        nameof(DisconnectText),
-        typeof(string),
-        typeof(DeviceItem),
-        new PropertyMetadata("Disconnected")
+        new PropertyMetadata(false)
     );
 
     public DeviceInfo? Device
@@ -33,16 +26,10 @@ public partial class DeviceItem : Button
         set => SetValue(DeviceProperty, value);
     }
 
-    public string ConnectText
+    public bool IsPaired
     {
-        get => (string)GetValue(ConnectTextProperty);
-        set => SetValue(ConnectTextProperty, value);
-    }
-
-    public string DisconnectText
-    {
-        get => (string)GetValue(DisconnectTextProperty);
-        set => SetValue(DisconnectTextProperty, value);
+        get => (bool)GetValue(IsPairedProperty);
+        set => SetValue(IsPairedProperty, value);
     }
 
     public DeviceItem()

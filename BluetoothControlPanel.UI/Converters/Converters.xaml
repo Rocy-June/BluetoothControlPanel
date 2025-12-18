@@ -2,8 +2,15 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:BluetoothControlPanel.UI.Converters">
 
-    <local:EmptyRollbackConverter x:Key="EmptyRollbackConverter" />
+    <local:BrightnessBrushFilterConverter x:Key="BrightnessBrushFilterConverter" />
+    <local:BrightnessBrushGrayScaleFilterConverter x:Key="BrightnessBrushGrayScaleFilterConverter" />
+    <local:BrightnessColorFilterConverter x:Key="BrightnessColorFilterConverter" />
+    <local:BrightnessColorGrayScaleFilterConverter x:Key="BrightnessColorGrayScaleFilterConverter" />
     <local:ConnectionStateToTextConverter x:Key="ConnectionStateToTextConverter" />
+    <local:EmptyRollbackConverter x:Key="EmptyRollbackConverter" />
     <local:FormattedStringConverter x:Key="FormattedStringConverter" />
+    <local:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+    <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    <local:ConnectionActionVisibilityConverter x:Key="ConnectionActionVisibilityConverter" />
     
 </ResourceDictionary>
