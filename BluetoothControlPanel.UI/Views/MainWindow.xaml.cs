@@ -42,8 +42,7 @@ public partial class MainWindow : Window
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         SetNotShowInTaskList();
-        ResetPosition();
-        ApplyWindowOpenState(_viewModel.IsWindowOpen);
+        ApplyWindowOpenState(_viewModel);
     }
 
     private void SetNotShowInTaskList()
@@ -51,6 +50,44 @@ public partial class MainWindow : Window
         var hwnd = new WindowInteropHelper(this).Handle;
         int exStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
         _ = SetWindowLong(hwnd, GWL_EXSTYLE, exStyle | WS_EX_TOOLWINDOW);
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(MainViewModel.IsWindowOpen))
+        {
+            ResetPosition();
+            ApplyWindowOpenState(_viewModel);
+        }
+    }
+
+    private void ApplyWindowOpenState(MainViewModel vm)
+    {
+        if (vm.IsWindowOpen)
+        {
+            if (FindResource("ShowWindowStoryboard") is Storyboard storyboard)
+            {
+                Show();
+
+                vm.IsWindowShowing = true;
+                storyboard.Begin(this, true);
+            }
+        }
+        else
+        {
+            if (FindResource("HideWindowStoryboard") is Storyboard storyboard)
+            {
+                storyboard.Completed += async (s, e) =>
+                {
+                    Hide();
+
+                    await Task.Delay(500);
+                    vm.IsWindowShowing = false;
+                };
+
+                storyboard.Begin(this, true);
+            }
+        }
     }
 
     private void ResetPosition()
@@ -137,33 +174,5 @@ public partial class MainWindow : Window
         }
 
         return TaskBarPosition.Left;
-    }
-
-    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(MainViewModel.IsWindowOpen))
-        {
-            ApplyWindowOpenState(_viewModel.IsWindowOpen);
-        }
-    }
-
-    private void ApplyWindowOpenState(bool isOpen)
-    {
-        if (isOpen)
-        {
-            if (FindResource("ShowWindowStoryboard") is Storyboard storyboard)
-            {
-                Show();
-                storyboard.Begin(this, true);
-            }
-        }
-        else 
-        {
-            if (FindResource("HideWindowStoryboard") is Storyboard storyboard)
-            {
-                storyboard.Completed += (s, e) => { Hide(); };
-                storyboard.Begin(this, true);
-            }
-        }
     }
 }

@@ -23,6 +23,8 @@ public sealed class TrayIconService : IDisposable
     private readonly IWindowManager _windowManager;
     private readonly MainViewModel _mainViewModel;
 
+    private bool _ignoreOnce = false;
+
     public TrayIconService(ILogService logService, IWindowManager windowManager, MainViewModel mainViewModel)
     {
         _logService = logService;
@@ -34,14 +36,32 @@ public sealed class TrayIconService : IDisposable
             Icon = LoadTrayIcon() ?? SystemIcons.Application,
             Visibility = Visibility.Visible
         };
+        _taskbarIcon.TrayLeftMouseDown += TaskbarIcon_TrayLeftMouseDown;
         _taskbarIcon.TrayLeftMouseUp += TaskbarIcon_TrayLeftMouseUp;
+        _taskbarIcon.TrayRightMouseDown += (s, e) => { windowManager.ShowDebugWindow(); };
+    }
+
+    private void TaskbarIcon_TrayLeftMouseDown(object sender, RoutedEventArgs e)
+    {
+        _logService.Add("Tray icon left mouse downed.");
+
+        if (_mainViewModel.IsWindowShowing)
+        {
+            _ignoreOnce = true;
+        }
     }
 
     private void TaskbarIcon_TrayLeftMouseUp(object sender, RoutedEventArgs e)
     {
         _logService.Add("Tray icon clicked.");
 
-        _mainViewModel.IsWindowOpen = true;
+        if (_ignoreOnce)
+        {
+            _ignoreOnce = false;
+            return;
+        }
+
+        _mainViewModel.IsWindowOpen = !_mainViewModel.IsWindowOpen;
         _windowManager.FocusMainWindow();
     }
 

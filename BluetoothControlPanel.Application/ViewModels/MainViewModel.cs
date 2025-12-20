@@ -26,6 +26,9 @@ public partial class MainViewModel : ViewModelBase
     public ReadOnlyObservableCollection<DeviceInfo> AvailableDevices => _driver.AvailableDevices;
 
     [ObservableProperty]
+    private bool isWindowShowing = false;
+
+    [ObservableProperty]
     private bool isWindowOpen = false;
 
     public MainViewModel(ILogService logService, IBluetoothDriverService driver, IWindowManager windowManager)
@@ -40,7 +43,7 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private void Shown()
     {
-        AutoRefreshAsync();
+        //AutoRefreshAsync();
 
         AddLog("Window shown");
     }

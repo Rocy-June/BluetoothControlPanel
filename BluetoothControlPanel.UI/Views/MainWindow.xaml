@@ -33,15 +33,46 @@
     <Window.Resources>
 
         <Storyboard x:Key="ShowWindowStoryboard">
-            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.18" />
-            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="RenderTransform.ScaleX" From="0.95" To="1" Duration="0:0:0.18" />
-            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="RenderTransform.ScaleY" From="0.95" To="1" Duration="0:0:0.18" />
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" 
+                             From="0" To="1" Duration="0:0:0.1" />
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" 
+                             From="50" To="0" Duration="0:0:0.4">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="PairedList" Storyboard.TargetProperty="Opacity" 
+                             From="0" To="1" 
+                             BeginTime="0:0:0.15" Duration="0:0:0.3" />
+            <DoubleAnimation Storyboard.TargetName="PairedList" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" 
+                             From="50" To="0" 
+                             BeginTime="0:0:0.15" Duration="0:0:0.35">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="AvailableList" Storyboard.TargetProperty="Opacity" 
+                             From="0" To="1" 
+                             BeginTime="0:0:0.15" Duration="0:0:0.3" />
+            <DoubleAnimation Storyboard.TargetName="AvailableList" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" 
+                             From="50" To="0" 
+                             BeginTime="0:0:0.15" Duration="0:0:0.35">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
         </Storyboard>
 
         <Storyboard x:Key="HideWindowStoryboard">
-            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.14" />
-            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="RenderTransform.ScaleX" From="1" To="0.95" Duration="0:0:0.14" />
-            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="RenderTransform.ScaleY" From="1" To="0.95" Duration="0:0:0.14" />
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.05" />
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" 
+                             From="0" To="50" Duration="0:0:0.05" />
+            <DoubleAnimation Storyboard.TargetName="PairedList" Storyboard.TargetProperty="Opacity" From="1" To="0" BeginTime="0:0:0.05" Duration="0:0:0" />
+            <DoubleAnimation Storyboard.TargetName="PairedList" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" 
+                             From="0" To="50" BeginTime="0:0:0.05" Duration="0:0:0" />
+            <DoubleAnimation Storyboard.TargetName="AvailableList" Storyboard.TargetProperty="Opacity" From="1" To="0" BeginTime="0:0:0.05" Duration="0:0:0" />
+            <DoubleAnimation Storyboard.TargetName="AvailableList" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" 
+                             From="0" To="50" BeginTime="0:0:0.05" Duration="0:0:0" />
         </Storyboard>
 
         <DataTemplate DataType="{x:Type bt:DeviceInfo}">
@@ -50,6 +81,31 @@
 
         <Style x:Key="MainWindowBorder" TargetType="Border" BasedOn="{StaticResource WindowBorder}">
             <Setter Property="Padding" Value="0,15,0,0" />
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="AnimateContent" TargetType="Control">
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="DeivceListTitle" TargetType="TextBlock" BasedOn="{StaticResource TextBase}">
@@ -60,16 +116,16 @@
     </Window.Resources>
 
     <Border x:Name="Root" Style="{StaticResource MainWindowBorder}">
-        <Border.RenderTransform>
-            <ScaleTransform ScaleX="1" ScaleY="1" />
-        </Border.RenderTransform>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer
+                VerticalScrollBarVisibility="Auto"
+                Grid.Row="0">
+                
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -83,7 +139,9 @@
                         Text="Your devices"
                         Grid.Row="0"/>
 
-                    <ItemsControl 
+                    <ItemsControl
+                        x:Name="PairedList"
+                        Style="{StaticResource AnimateContent}"
                         ItemsSource="{Binding PairedDevices}"
                         Grid.Row="1">
                         <ItemsControl.ItemTemplate>
@@ -104,10 +162,12 @@
 
                     <TextBlock 
                         Style="{StaticResource DeivceListTitle}"
-                        Text="New devices"
+                        Text="Available devices"
                         Grid.Row="2"/>
 
                     <ItemsControl 
+                        x:Name="AvailableList"
+                        Style="{StaticResource AnimateContent}"
                         ItemsSource="{Binding AvailableDevices}"
                         Grid.Row="3">
                         <ItemsControl.ItemTemplate>
@@ -137,7 +197,7 @@
                     Margin="10,0,0,0" />
 
             </StackPanel>
-            
+
         </Grid>
     </Border>
 </Window>

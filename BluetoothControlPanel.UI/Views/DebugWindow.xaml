@@ -23,21 +23,10 @@
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,2">
-            <Button Content="Refresh status"
-                    Command="{Binding RefreshStatusCommand}"
-                    Padding="12,6" />
-            <TextBlock Text="{Binding StatusMessage}"
-                       Margin="12,0,0,0"
-                       VerticalAlignment="Center"
-                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
-        </StackPanel>
-
-        <GroupBox Grid.Row="1" Header="Activity">
+        <GroupBox Header="Activity">
             <ListBox ItemsSource="{Binding LogEntries}" Background="{DynamicResource AccentDark1Brush}" />
         </GroupBox>
     </Grid>

@@ -197,6 +197,7 @@
                             <TextBlock.Text>
                                 <MultiBinding Converter="{StaticResource EmptyRollbackConverter}">
                                     <Binding Path="Device.Name" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
+                                    <Binding Path="Device.Address" RelativeSource="{RelativeSource AncestorType=local:DeviceItem}" />
                                     <Binding Source="Unknown Device" />
                                 </MultiBinding>
                             </TextBlock.Text>
@@ -257,10 +258,10 @@
                         Orientation="Vertical" 
                         Grid.Column="0">
                         
-                        <TextBlock Style="{StaticResource DeviceDetail}" Text="{Binding Device.LastSeen, RelativeSource={RelativeSource AncestorType=local:DeviceItem}, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}"  />
+                        <!--<TextBlock Style="{StaticResource DeviceDetail}" Text="{Binding Device.LastSeen, RelativeSource={RelativeSource AncestorType=local:DeviceItem}, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}"  />-->
                         <TextBlock Style="{StaticResource DeviceDetail}">
-                            <Run Text="{Binding Device.Address, RelativeSource={RelativeSource AncestorType=local:DeviceItem}, Mode=OneWay}" />
-                            <Run Text=" | " />
+                            <!--<Run Text="{Binding Device.Address, RelativeSource={RelativeSource AncestorType=local:DeviceItem}, Mode=OneWay}" />
+                            <Run Text=" | " />-->
                             <Run>
                                 <Run.Text>
                                     <MultiBinding Converter="{StaticResource FormattedStringConverter}">
