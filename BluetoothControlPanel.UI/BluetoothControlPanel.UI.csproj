@@ -20,8 +20,4 @@
     <ProjectReference Include="..\BluetoothControlPanel.Infrastructure\BluetoothControlPanel.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Assets\Images\" />
-  </ItemGroup>
-
 </Project>
