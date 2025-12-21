@@ -2,10 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:syswin="clr-namespace:System.Windows;assembly=PresentationFramework">
 
-    <!--<Color 
-        x:Key="BackgroundColor"
-        A="{x:Static syswin:SystemColors.AccentColorDark1}"/>-->
-
     <SolidColorBrush x:Key="AccentBrush" Color="{x:Static syswin:SystemColors.AccentColor}" />
     <SolidColorBrush x:Key="AccentDark1Brush" Color="{x:Static syswin:SystemColors.AccentColorDark1}" />
     <SolidColorBrush x:Key="AccentDark2Brush" Color="{x:Static syswin:SystemColors.AccentColorDark2}" />

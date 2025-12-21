@@ -1,0 +1,42 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    xmlns:syswin="clr-namespace:System.Windows;assembly=PresentationFramework">
+
+    <sys:Double x:Key="WindowBorderThicknessSize">1</sys:Double>
+    <sys:Double x:Key="WindowBorderMarginSize">10</sys:Double>
+
+    <Thickness
+        x:Key="WindowBorderThickness"
+        Top="{StaticResource WindowBorderThicknessSize}"
+        Bottom="{StaticResource WindowBorderThicknessSize}"
+        Left="{StaticResource WindowBorderThicknessSize}"
+        Right="{StaticResource WindowBorderThicknessSize}" />
+    <Thickness 
+        x:Key="WindowBorderMargin"
+        Top="{StaticResource WindowBorderMarginSize}"
+        Bottom="{StaticResource WindowBorderMarginSize}"
+        Left="{StaticResource WindowBorderMarginSize}"
+        Right="{StaticResource WindowBorderMarginSize}" />
+
+    <Style x:Key="WindowBorder" TargetType="Border">
+        <Setter Property="BorderBrush" Value="#4888" />
+        <Setter Property="BorderThickness" Value="{StaticResource WindowBorderThickness}" />
+        <Setter Property="Background" Value="{DynamicResource AccentDark1Brush}" />
+        <Setter Property="Margin" Value="{StaticResource WindowBorderMargin}" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect 
+                    Color="#000"
+                    BlurRadius="10"
+                    ShadowDepth="0"
+                    Opacity="0.5" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ContextMenu">
+        <Setter Property="Foreground" Value="#000" />
+    </Style>
+
+</ResourceDictionary>

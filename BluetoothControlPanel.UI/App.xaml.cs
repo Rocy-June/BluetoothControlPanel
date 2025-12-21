@@ -5,13 +5,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 using BluetoothControlPanel.Application.DependencyInjection;
 using BluetoothControlPanel.Application.Services.Config;
-using BluetoothControlPanel.Application.Services.Theme;
 using BluetoothControlPanel.Application.Services.Windows;
 using BluetoothControlPanel.Application.ViewModels;
 using BluetoothControlPanel.Application.Services.Bluetooth;
 using BluetoothControlPanel.Infrastructure.Services.Monitors;
 using BluetoothControlPanel.UI.Views;
 using BluetoothControlPanel.Infrastructure.Services.Taskbar;
+using BluetoothControlPanel.Infrastructure.Services.Theme;
 
 namespace BluetoothControlPanel.UI;
 

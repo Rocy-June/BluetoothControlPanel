@@ -75,6 +75,7 @@ public partial class MainWindow : Window
         }
         else
         {
+            return;
             if (FindResource("HideWindowStoryboard") is Storyboard storyboard)
             {
                 storyboard.Completed += async (s, e) =>

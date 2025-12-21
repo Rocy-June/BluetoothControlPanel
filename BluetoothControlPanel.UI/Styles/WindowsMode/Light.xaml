@@ -4,8 +4,7 @@
     <SolidColorBrush x:Key="TextBaseBrush" Color="#000000" />
 
     <Style x:Key="TextBase" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{StaticResource TextBaseBrush}" />
-        <!--<Setter Property="" Value="Red" />-->
+        <Setter Property="Foreground" Value="{DynamicResource TextBaseBrush}" />
     </Style>
 
     <Style TargetType="TextBlock" BasedOn="{StaticResource TextBase}"/>

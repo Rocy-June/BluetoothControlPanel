@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-
-using Hardcodet.Wpf.TaskbarNotification;
-
 using BluetoothControlPanel.Application.DependencyInjection;
 using BluetoothControlPanel.Application.Services.Logging;
-using BluetoothControlPanel.Application.ViewModels;
 using BluetoothControlPanel.Application.Services.Windows;
+using BluetoothControlPanel.Application.ViewModels;
+using Hardcodet.Wpf.TaskbarNotification;
+
+using App = System.Windows.Application;
 
 namespace BluetoothControlPanel.Infrastructure.Services.Taskbar;
 
@@ -25,20 +27,24 @@ public sealed class TrayIconService : IDisposable
 
     private bool _ignoreOnce = false;
 
-    public TrayIconService(ILogService logService, IWindowManager windowManager, MainViewModel mainViewModel)
+    public TrayIconService(
+        ILogService logService,
+        IWindowManager windowManager,
+        MainViewModel mainViewModel
+    )
     {
         _logService = logService;
         _windowManager = windowManager;
         _mainViewModel = mainViewModel;
-        _taskbarIcon = new TaskbarIcon
+        _taskbarIcon = new()
         {
             ToolTipText = "Bluetooth Device",
             Icon = LoadTrayIcon() ?? SystemIcons.Application,
-            Visibility = Visibility.Visible
+            Visibility = Visibility.Visible,
+            ContextMenu = BuildContextMenu(),
         };
         _taskbarIcon.TrayLeftMouseDown += TaskbarIcon_TrayLeftMouseDown;
         _taskbarIcon.TrayLeftMouseUp += TaskbarIcon_TrayLeftMouseUp;
-        _taskbarIcon.TrayRightMouseDown += (s, e) => { windowManager.ShowDebugWindow(); };
     }
 
     private void TaskbarIcon_TrayLeftMouseDown(object sender, RoutedEventArgs e)
@@ -69,8 +75,8 @@ public sealed class TrayIconService : IDisposable
     {
         try
         {
-            var iconUri = new Uri("pack://application:,,,/Assets/Images/ApplicationIcon.ico");
-            var streamInfo = System.Windows.Application.GetResourceStream(iconUri);
+            var iconUri = new Uri("pack://application:,,,/Assets/Images/Logo.ico");
+            var streamInfo = App.GetResourceStream(iconUri);
             if (streamInfo == null)
             {
                 return null;
@@ -88,7 +94,7 @@ public sealed class TrayIconService : IDisposable
     private static int GetTrayIconSize()
     {
         const int defaultSize = 16;
-        var window = System.Windows.Application.Current?.MainWindow;
+        var window = App.Current?.MainWindow;
         if (window == null)
         {
             return defaultSize;
@@ -103,6 +109,61 @@ public sealed class TrayIconService : IDisposable
         {
             return defaultSize;
         }
+    }
+
+    private ContextMenu BuildContextMenu()
+    {
+        var menu = new ContextMenu();
+        menu.Items.Add(CreateMenuItem("Allow device connections", OnAllowDeviceConnections));
+        menu.Items.Add(new Separator());
+        menu.Items.Add(CreateMenuItem("Send file", OnSendFile));
+        menu.Items.Add(CreateMenuItem("Receive file", OnReceiveFile));
+        menu.Items.Add(new Separator());
+        menu.Items.Add(CreateMenuItem("Join personal area network", OnJoinPersonalAreaNetwork));
+        menu.Items.Add(new Separator());
+        menu.Items.Add(CreateMenuItem("Open settings", OnOpenSettings));
+        menu.Items.Add(new Separator());
+        menu.Items.Add(CreateMenuItem("Exit", OnExit));
+        
+        return menu;
+    }
+
+    private static MenuItem CreateMenuItem(string header, RoutedEventHandler handler)
+    {
+        var item = new MenuItem { Header = header };
+        item.Click += handler;
+        return item;
+    }
+
+    private void OnAllowDeviceConnections(object sender, RoutedEventArgs e)
+    {
+        _logService.Add("Allow device connections clicked.", nameof(TrayIconService));
+    }
+
+    private void OnSendFile(object sender, RoutedEventArgs e)
+    {
+        _logService.Add("Send file clicked.", nameof(TrayIconService));
+    }
+
+    private void OnReceiveFile(object sender, RoutedEventArgs e)
+    {
+        _logService.Add("Receive file clicked.", nameof(TrayIconService));
+    }
+
+    private void OnJoinPersonalAreaNetwork(object sender, RoutedEventArgs e)
+    {
+        _logService.Add("Join personal area network clicked.", nameof(TrayIconService));
+    }
+
+    private void OnOpenSettings(object sender, RoutedEventArgs e)
+    {
+        _mainViewModel.IsWindowOpen = true;
+        _windowManager.FocusMainWindow();
+    }
+
+    private static void OnExit(object sender, RoutedEventArgs e)
+    {
+        System.Windows.Application.Current?.Shutdown();
     }
 
     public void Dispose()

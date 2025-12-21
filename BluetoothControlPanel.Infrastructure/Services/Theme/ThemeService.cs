@@ -4,10 +4,14 @@ using System.Windows;
 using System.Windows.Media;
 using Microsoft.Win32;
 
-namespace BluetoothControlPanel.Application.Services.Theme;
+using App = System.Windows.Application;
+
+namespace BluetoothControlPanel.Infrastructure.Services.Theme;
 
 public static class ThemeService
 {
+    private const int BASE_IDX = 1;
+
     private const string AccentBrushKey = "AccentAccentDark1Brush";
     private static SolidColorBrush? _accentBrush;
     private static bool _initialized;
@@ -15,7 +19,7 @@ public static class ThemeService
     private static ResourceDictionary? _windowsMainThemeDictionary;
     private static ResourceDictionary? _themeModeDictionary;
 
-    public static void Initialize(System.Windows.Application app)
+    public static void Initialize(App app)
     {
         if (_initialized)
         {
@@ -35,13 +39,13 @@ public static class ThemeService
     {
         if (string.Equals(e.PropertyName, nameof(SystemParameters.WindowGlassColor), StringComparison.Ordinal))
         {
-            System.Windows.Application.Current?.Dispatcher?.Invoke((Action)(() =>
+            App.Current?.Dispatcher?.Invoke(() =>
             {
-                if (System.Windows.Application.Current is not null)
+                if (App.Current is not null)
                 {
-                    UpdateAccentBrush(System.Windows.Application.Current);
+                    UpdateAccentBrush(App.Current);
                 }
-            }));
+            });
         }
     }
 
@@ -50,17 +54,17 @@ public static class ThemeService
         if (e.Category == UserPreferenceCategory.General ||
             e.Category == UserPreferenceCategory.Color)
         {
-            System.Windows.Application.Current?.Dispatcher?.Invoke((Action)(() =>
+            App.Current?.Dispatcher?.Invoke(() =>
             {
-                if (System.Windows.Application.Current is not null)
+                if (App.Current is not null)
                 {
-                    ApplyThemeDictionaries(System.Windows.Application.Current);
+                    ApplyThemeDictionaries(App.Current);
                 }
-            }));
+            });
         }
     }
 
-    private static void UpdateAccentBrush(System.Windows.Application app)
+    private static void UpdateAccentBrush(App app)
     {
         var color = SystemParameters.WindowGlassColor;
 
@@ -83,7 +87,7 @@ public static class ThemeService
         }
     }
 
-    private static SolidColorBrush ResolveOrCreateBrush(System.Windows.Application app, Color color)
+    private static SolidColorBrush ResolveOrCreateBrush(App app, Color color)
     {
         if (app.Resources[AccentBrushKey] is SolidColorBrush existing && !existing.IsFrozen)
         {
@@ -94,15 +98,17 @@ public static class ThemeService
         return new SolidColorBrush(color);
     }
 
-    private static void ApplyThemeDictionaries(System.Windows.Application app)
+    private static void ApplyThemeDictionaries(App app)
     {
         var windowsModeUri = GetWindowsModeUri();
         var windowsMainThemeUri = GetWindowsMainThemeUri();
         var themeModeUri = GetThemeModeUri();
 
-        _windowsModeDictionary = ReplaceDictionary(app, _windowsModeDictionary, windowsModeUri);
-        _windowsMainThemeDictionary = ReplaceDictionary(app, _windowsMainThemeDictionary, windowsMainThemeUri);
-        _themeModeDictionary = ReplaceDictionary(app, _themeModeDictionary, themeModeUri);
+        var idx = BASE_IDX;
+
+        _windowsModeDictionary = ReplaceDictionary(app, idx++, _windowsModeDictionary, windowsModeUri);
+        _windowsMainThemeDictionary = ReplaceDictionary(app, idx++, _windowsMainThemeDictionary, windowsMainThemeUri);
+        _themeModeDictionary = ReplaceDictionary(app, idx++, _themeModeDictionary, themeModeUri);
     }
 
     private static Uri GetWindowsModeUri()
@@ -143,15 +149,16 @@ public static class ThemeService
         return defaultValue;
     }
 
-    private static ResourceDictionary ReplaceDictionary(System.Windows.Application app, ResourceDictionary? current, Uri source)
+    private static ResourceDictionary ReplaceDictionary(App app, int idx, ResourceDictionary? current, Uri source)
     {
-        if (current is not null)
+        var dict = new ResourceDictionary { Source = source };
+        if (current is null)
         {
-            app.Resources.MergedDictionaries.Remove(current);
+            app.Resources.MergedDictionaries.Insert(idx, dict);
+            return dict;
         }
 
-        var dict = new ResourceDictionary { Source = source };
-        app.Resources.MergedDictionaries.Add(dict);
+        app.Resources.MergedDictionaries[idx] = dict;
         return dict;
     }
 }

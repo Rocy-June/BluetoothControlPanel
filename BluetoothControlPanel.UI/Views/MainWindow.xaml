@@ -15,10 +15,10 @@
     WindowStyle="None"
     AllowsTransparency="True"
     Background="Transparent"
-    ShowInTaskbar="True"
+    ShowInTaskbar="False"
     Topmost="True"
     WindowStartupLocation="Manual"
-    Visibility="Hidden"
+    Visibility="Collapsed"
     x:Name="MainWindowRoot">
 
     <b:Interaction.Triggers>
@@ -34,28 +34,28 @@
 
         <Storyboard x:Key="ShowWindowStoryboard">
             <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" 
-                             From="0" To="1" Duration="0:0:0.1" />
+                             To="1" Duration="0:0:0.1" />
             <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" 
-                             From="50" To="0" Duration="0:0:0.4">
+                             To="0" Duration="0:0:0.4">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut"/>
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
             <DoubleAnimation Storyboard.TargetName="PairedList" Storyboard.TargetProperty="Opacity" 
-                             From="0" To="1" 
+                             To="1" 
                              BeginTime="0:0:0.15" Duration="0:0:0.3" />
             <DoubleAnimation Storyboard.TargetName="PairedList" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" 
-                             From="50" To="0" 
+                             To="0" 
                              BeginTime="0:0:0.15" Duration="0:0:0.35">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut"/>
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
             <DoubleAnimation Storyboard.TargetName="AvailableList" Storyboard.TargetProperty="Opacity" 
-                             From="0" To="1" 
+                             To="1" 
                              BeginTime="0:0:0.15" Duration="0:0:0.3" />
             <DoubleAnimation Storyboard.TargetName="AvailableList" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" 
-                             From="50" To="0" 
+                             To="0" 
                              BeginTime="0:0:0.15" Duration="0:0:0.35">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut"/>
@@ -64,15 +64,15 @@
         </Storyboard>
 
         <Storyboard x:Key="HideWindowStoryboard">
-            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.05" />
+            <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.05" />
             <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" 
-                             From="0" To="50" Duration="0:0:0.05" />
-            <DoubleAnimation Storyboard.TargetName="PairedList" Storyboard.TargetProperty="Opacity" From="1" To="0" BeginTime="0:0:0.05" Duration="0:0:0" />
+                             To="50" Duration="0:0:0.05" />
+            <DoubleAnimation Storyboard.TargetName="PairedList" Storyboard.TargetProperty="Opacity" To="0" BeginTime="0:0:0.05" Duration="0:0:0" />
             <DoubleAnimation Storyboard.TargetName="PairedList" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" 
-                             From="0" To="50" BeginTime="0:0:0.05" Duration="0:0:0" />
-            <DoubleAnimation Storyboard.TargetName="AvailableList" Storyboard.TargetProperty="Opacity" From="1" To="0" BeginTime="0:0:0.05" Duration="0:0:0" />
+                             To="50" BeginTime="0:0:0.05" Duration="0:0:0" />
+            <DoubleAnimation Storyboard.TargetName="AvailableList" Storyboard.TargetProperty="Opacity" To="0" BeginTime="0:0:0.05" Duration="0:0:0" />
             <DoubleAnimation Storyboard.TargetName="AvailableList" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" 
-                             From="0" To="50" BeginTime="0:0:0.05" Duration="0:0:0" />
+                             To="50" BeginTime="0:0:0.05" Duration="0:0:0" />
         </Storyboard>
 
         <DataTemplate DataType="{x:Type bt:DeviceInfo}">
@@ -81,6 +81,7 @@
 
         <Style x:Key="MainWindowBorder" TargetType="Border" BasedOn="{StaticResource WindowBorder}">
             <Setter Property="Padding" Value="0,15,0,0" />
+            <Setter Property="Opacity" Value="0" />
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
             <Setter Property="RenderTransform">
                 <Setter.Value>
@@ -95,6 +96,7 @@
         </Style>
 
         <Style x:Key="AnimateContent" TargetType="Control">
+            <Setter Property="Opacity" Value="0" />
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
             <Setter Property="RenderTransform">
                 <Setter.Value>
@@ -102,7 +104,7 @@
                         <ScaleTransform/>
                         <SkewTransform/>
                         <RotateTransform/>
-                        <TranslateTransform/>
+                        <TranslateTransform Y="50"/>
                     </TransformGroup>
                 </Setter.Value>
             </Setter>
@@ -111,6 +113,22 @@
         <Style x:Key="DeivceListTitle" TargetType="TextBlock" BasedOn="{StaticResource TextBase}">
             <Setter Property="Padding" Value="10,5,10,10" />
             <Setter Property="FontSize" Value="12pt" />
+        </Style>
+
+        <Style x:Key="BottomGrid" TargetType="Grid">
+
+        </Style>
+
+        <Style x:Key="GotoSettingText" TargetType="TextBlock" BasedOn="{StaticResource TextBase}">
+            <Setter Property="Margin" Value="10" />
+        </Style>
+
+        <Style x:Key="ControllerStackPanel" TargetType="StackPanel">
+            <Setter Property="Orientation" Value="Horizontal" />
+        </Style>
+
+        <Style x:Key="ControllerButton" TargetType="Button">
+            <Setter Property="Margin" Value="4,0,0,4" />
         </Style>
 
     </Window.Resources>
@@ -125,7 +143,7 @@
             <ScrollViewer
                 VerticalScrollBarVisibility="Auto"
                 Grid.Row="0">
-                
+
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -136,7 +154,7 @@
 
                     <TextBlock 
                         Style="{StaticResource DeivceListTitle}"
-                        Text="Your devices"
+                        Text="Paired Devices"
                         Grid.Row="0"/>
 
                     <ItemsControl
@@ -162,7 +180,7 @@
 
                     <TextBlock 
                         Style="{StaticResource DeivceListTitle}"
-                        Text="Available devices"
+                        Text="Available Devices"
                         Grid.Row="2"/>
 
                     <ItemsControl 
@@ -188,15 +206,49 @@
                 </Grid>
             </ScrollViewer>
 
-            <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Center" Margin="8">
+            <Grid 
+                Style="{StaticResource BottomGrid}"
+                Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                <Button 
-                    Content="Debug" 
-                    Command="{Binding OpenDebugWindowCommand}" 
-                    Padding="12,6" 
-                    Margin="10,0,0,0" />
+                <TextBlock
+                    Style="{StaticResource GotoSettingText}"
+                    Grid.Row="0">
+                    
+                            <Hyperlink
+                                FontSize="12pt"
+                                Foreground="{DynamicResource TextBaseBrush}" 
+                                Command="{Binding OpenSystemBluetoothSettingWindowCommand}">
+                            <Run Text="Bluetooth settings"/>
+                        </Hyperlink>
+                        <LineBreak/>
+                        <Run 
+                            FontSize="10pt"
+                            Text="Open Windows Settings to manage Bluetooth and devices" 
+                            Foreground="{DynamicResource TextSubBrush}"/>
 
-            </StackPanel>
+                </TextBlock>
+
+                <StackPanel
+                    Style="{StaticResource ControllerStackPanel}"
+                    Grid.Row="1">
+
+                    <Button
+                        Style="{StaticResource ControllerButton}"
+                        Content="Bluetooth"
+                        Command="{Binding SwitchBluetoothOpenStateCommand}"/>
+
+                    <Button 
+                        Style="{StaticResource ControllerButton}"
+                        Content="Debug" 
+                        Command="{Binding OpenDebugWindowCommand}"/>
+
+                </StackPanel>
+
+            </Grid>
 
         </Grid>
     </Border>

@@ -9,13 +9,11 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
 
-                <ResourceDictionary Source="Styles/StyleBase.xaml"/>
+                <ResourceDictionary Source="/Styles/StyleVariables.xaml"/>
 
-                <ResourceDictionary Source="Styles/WindowsMode/Light.xaml"/>
-                <ResourceDictionary Source="Styles/WindowsMode/DisableMainTheme/Light.xaml"/>
-                <ResourceDictionary Source="Styles/ThemeMode/Light.xaml"/>
+                <ResourceDictionary Source="/Styles/StyleBase.xaml"/>
 
-                <ResourceDictionary Source="Converters/Converters.xaml"/>
+                <ResourceDictionary Source="/Converters/Converters.xaml"/>
 
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
